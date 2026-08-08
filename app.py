@@ -252,13 +252,21 @@ if page == "Visão Geral":
 
 # ================================================= INDICADORES
 elif page == "Indicadores":
-    fases=sorted(df["Fase_label"].dropna().unique(), key=lambda x:(x!="Alfa",x))
+    fases = sorted(df["Fase_label"].dropna().unique(), key=lambda x: (x != "Alfa", x))
     with st.expander("Filtros", expanded=False):
-        fsel=st.multiselect("Fase", fases, default=fases)
-    f = dfx[dfx["Fase_label"].isin(fsel)] if fsel else dfx
-    if len(fsel)<len(fases) and fsel:
+        fsel = st.multiselect("Fase", fases, default=fases)
+
+    # Se todas as fases estiverem selecionadas, mantém o dataframe completo (incluindo valores nulos em Fase_label)
+    if set(fsel) == set(fases):
+        f = dfx
+    else:
+        f = dfx[dfx["Fase_label"].isin(fsel)] if fsel else dfx
+
+    if len(fsel) < len(fases) and fsel:
         st.caption("Fases selecionadas: " + ", ".join(fsel))
-    kpi_row(f); st.markdown("")
+
+    kpi_row(f)
+    st.markdown("")
     st.caption("Um gráfico para cada indicador. Os textos abaixo de cada gráfico refletem os dados filtrados.")
 
     def card(col, titulo, fig, texto):
