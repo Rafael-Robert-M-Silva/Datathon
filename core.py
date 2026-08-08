@@ -25,8 +25,11 @@ FEATURE_LABELS = {
 # Esta e a definicao usada no notebook (df_modelagem) e reproduz seus numeros.
 CONSTANTE_MIN_ANOS = 3
 
+# URL raw do GitHub com os dados consolidados
+DATA_URL = "https://raw.githubusercontent.com/Rafael-Robert-M-Silva/Datathon/refs/heads/main/dados_consolidados.csv"
 
-def load_data(path="dados_consolidados.csv"):
+
+def load_data(path=DATA_URL):
     """Carrega o dataset consolidado e classifica cada registro em Novo/Constante (por ano)."""
     df = pd.read_csv(path)
     if "Ano ingresso" in df.columns:
@@ -116,13 +119,8 @@ def risk_band(prob):
     return "Risco baixo", "#35C08A"
 
 
-from pathlib import Path
 if __name__ == "__main__":
-    # Caminho dinâmico baseado na localização atual do arquivo script
-    BASE_DIR = Path(__file__).resolve().parent
-    csv_path = BASE_DIR / "dados_consolidados.csv"
-
-    df = load_data(csv_path)
+    df = load_data(DATA_URL)
     dc = alunos_constantes(df)
     print("Registros totais:", len(df), "| constantes (3 anos):", len(dc), "| RAs constantes:", dc.RA.nunique())
     models, meta = train_models(df)

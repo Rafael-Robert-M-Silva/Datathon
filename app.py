@@ -9,7 +9,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 import core
 
-#  paleta 
+# ---------------- paleta ----------------
 NAVY="#0E1B27"; PANEL="#16283A"; LINE="#25384B"
 TEAL="#0E9E8E"; AMBER="#E8A13A"; BLUE="#4F9CE8"
 GOOD="#35C08A"; WARN="#F2B14A"; BAD="#E86A5C"; NEUTRAL="#DDE7EE"
@@ -79,7 +79,7 @@ DFC = core.alunos_constantes(df)                      # base do notebook (consta
 models, meta = get_models(df)
 ANOS = sorted(df["Ano"].dropna().unique().tolist())
 
-#  helpers 
+# ---------------- helpers ----------------
 def style(fig, h=330, legend=True):
     fig.update_layout(height=h, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
                       font=dict(color=SUB, family="Inter", size=12),
@@ -141,7 +141,7 @@ def pedra_present(f, col):
     pres=[p for p in PEDRA_ORDER if p in g.index and pd.notna(g[p])]
     return pres, [g[p] for p in pres]
 
-#  hero 
+# ---------------- hero ----------------
 st.markdown("""
 <div class="hero">
   <div class="kick">ASSOCIAÇÃO PASSOS MÁGICOS · DATATHON PEDE 2022–2024</div>
@@ -150,7 +150,7 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-#  navegacao (botoes) 
+# ---------------- navegacao (botoes) ----------------
 PAGES = ["Visão Geral", "Indicadores", "Análises", "Previsão de Risco"]
 if "page" not in st.session_state:
     st.session_state.page = PAGES[0]
@@ -180,9 +180,9 @@ st.sidebar.caption(f"Modelo treinado com **{meta['n_ras_treino']}** alunos const
 tipo_map={"Constantes":"Constante","Novos":"Novo"}
 dfx = df if tipo=="Todos" else df[df["tipo_aluno"]==tipo_map[tipo]]
 
-# = VISAO GERAL
+# ================================================= VISAO GERAL
 if page == "Visão Geral":
-    with st.expander("Filtros", expanded=False):=
+    with st.expander("Filtros", expanded=False):
         anos_sel = st.multiselect("Ano", ANOS, default=ANOS)
     f = dfx[dfx["Ano"].isin(anos_sel)] if anos_sel else dfx
     kpi_row(f); st.markdown("")
@@ -250,7 +250,7 @@ if page == "Visão Geral":
         top0=tp.loc[an[0]].get("TOPAZIO",0); top1=tp.loc[an[-1]].get("TOPAZIO",0)
         insight(f"A fatia de alunos <b>Topázio</b> foi de {top0:.1f}% ({an[0]}) para <b>{top1:.1f}%</b> ({an[-1]}).")
 
-# = INDICADORES
+# ================================================= INDICADORES
 elif page == "Indicadores":
     fases=sorted(df["Fase_label"].dropna().unique(), key=lambda x:(x!="Alfa",x))
     with st.expander("Filtros", expanded=False):
@@ -373,7 +373,7 @@ elif page == "Indicadores":
         figIND=None; tIND=""
     card(b,"INDE · Nota Geral (por Pedra)",figIND,tIND)
 
-# = ANALISES (perguntas 1-11, exceto 9)
+# ================================================= ANALISES (perguntas 1-11, exceto 9)
 elif page == "Análises":
     d = DFC  # alunos constantes (recorte do notebook)
     st.caption(f"Respostas às perguntas de negócio do desafio, sobre os **{d['RA'].nunique()} alunos constantes** "
@@ -531,7 +531,7 @@ elif page == "Análises":
                     f"<b>{rec:.0f}%</b> chegaram <b>em fase</b> em {a1}. A defasagem inicial não é destino: "
                     f"a permanência no programa reverte a trajetória.")
 
-# = PREVISAO
+# ================================================= PREVISAO
 else:
     sec("Preditor de risco de defasagem")
     st.markdown("Informe os indicadores atuais de um aluno para estimar a **probabilidade de risco de defasagem no próximo ciclo**.")
